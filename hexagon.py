@@ -3,8 +3,10 @@ import math
 from math import sqrt
 import matplotlib.pyplot as plt
 import numpy as np
+import time
+from torch.utils.tensorboard import SummaryWriter
 
-PRINT_FREQ = 1000
+PRINT_FREQ = 100000
 RENDER_FLAG = False
 
 
@@ -71,6 +73,33 @@ class Line:
         return length
 
 
+def get_time_str():
+    local_time = time.localtime(time.time())
+    # date_str = str(local_time[0]) + str(local_time[1]) + str(local_time[2])
+    date_str1 = str(local_time[0])
+    if len(date_str1) == 1:
+        date_str1 = "0" + date_str1
+    date_str2 = str(local_time[1])
+    if len(date_str2) == 1:
+        date_str2 = "0" + date_str2
+    date_str3 = str(local_time[2])
+    if len(date_str3) == 1:
+        date_str3 = "0" + date_str3
+    date_str = date_str1 + date_str2 + date_str3
+
+    time_str1 = str(local_time[3])
+    if len(time_str1) == 1:
+        time_str1 = "0" + time_str1
+    time_str2 = str(local_time[4])
+    if len(time_str2) == 1:
+        time_str2 = "0" + time_str2
+    time_str3 = str(local_time[5])
+    if len(time_str3) == 1:
+        time_str3 = "0" + time_str3
+    time_str = time_str1 + time_str2 + time_str3
+    return date_str, time_str
+
+
 def main():
     line0 = Line(-sqrt(3), sqrt(3), x_range=[0.5, 1])
     line1 = Line(0, sqrt(3)/2, x_range=[-0.5, 0.5])
@@ -89,6 +118,9 @@ def main():
 
     tmp_length_list = []
     sum = 0
+    last_time = time.time()
+    date_str, time_str = get_time_str()
+    writer = SummaryWriter('./tensorboard/' + date_str + "_" + time_str)
 
     i = 0
     # for i in range(10):
@@ -118,10 +150,14 @@ def main():
             tmp_length_list.append(length)
             if i % PRINT_FREQ == 1:
                 # print("np.mean(tmp_length_list): ", np.mean(tmp_length_list))
-                if len(tmp_length_list) == 0:
-                    print("debug")
                 sum += np.sum(tmp_length_list)
-                print("mean length: ", sum / i)
+                mean_length = sum / i
+                print("mean length: ", mean_length)
+                writer.add_scalar('mean_length', mean_length, i)
+                delta_time = time.time() - last_time
+                print("delta time: ", delta_time)
+                writer.add_scalar('delta_time', delta_time, i)
+                last_time = time.time()
                 tmp_length_list = []
     # plt.show()
 
