@@ -4,6 +4,8 @@ from math import sqrt
 import matplotlib.pyplot as plt
 import numpy as np
 
+PRINT_FREQ = 1000
+
 
 class Node:
     def __init__(self, x, y):
@@ -84,7 +86,8 @@ def main():
     plt.ylim([-1.5, 1.5])
     # plt.show()
 
-    length_list = []
+    tmp_length_list = []
+    sum = 0
 
     i = 0
     # for i in range(10):
@@ -109,9 +112,12 @@ def main():
             length = tmp_line.hexagon_length(hexagon_line_list)
             assert length < 2
             assert length > 0
-            length_list.append(length)
-        if i % 1000 == 1:
-            print("np.mean(length_list): ", np.mean(length_list))
+            tmp_length_list.append(length)
+        if i % PRINT_FREQ == 1:
+            print("np.mean(tmp_length_list): ", np.mean(tmp_length_list))
+            sum += np.sum(tmp_length_list)
+            print("total mean: ", sum / i)
+            tmp_length_list = []
     # plt.show()
 
 
