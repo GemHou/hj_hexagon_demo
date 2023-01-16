@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 PRINT_FREQ = 1000
+RENDER_FLAG = False
 
 
 class Node:
@@ -58,7 +59,8 @@ class Line:
         for tmp_line in hexagon_line_list:
             tmp_node = self.intersection(tmp_line)
             if tmp_node is not None:
-                tmp_node.plot(color="k+")
+                if RENDER_FLAG:
+                    tmp_node.plot(color="k+")
                 node_list.append(tmp_node)
         assert len(node_list) == 2
         x1 = node_list[0].x
@@ -79,12 +81,11 @@ def main():
 
     hexagon_line_list = [line0, line1, line2, line3, line4, line5]
 
-    for tmp_line in hexagon_line_list:
-        tmp_line.plot()
-
-    plt.xlim([-1.5, 1.5])
-    plt.ylim([-1.5, 1.5])
-    # plt.show()
+    if RENDER_FLAG:
+        for tmp_line in hexagon_line_list:
+            tmp_line.plot()
+        plt.xlim([-1.5, 1.5])
+        plt.ylim([-1.5, 1.5])
 
     tmp_length_list = []
     sum = 0
@@ -101,23 +102,27 @@ def main():
             i += 1
             # print("node.x: ", node.x)
             # print("node.y: ", node.y)
-            node.plot()
 
             theta = random.random() * 2 * math.pi - math.pi  # -pi~pi
             k = math.tan(theta)
             b = node.y - node.x * k
             tmp_line = Line(k, b)
-            tmp_line.plot(color="g")
+
+            if RENDER_FLAG:
+                node.plot()
+                tmp_line.plot(color="g")
 
             length = tmp_line.hexagon_length(hexagon_line_list)
             assert length < 2
             assert length > 0
             tmp_length_list.append(length)
-        if i % PRINT_FREQ == 1:
-            print("np.mean(tmp_length_list): ", np.mean(tmp_length_list))
-            sum += np.sum(tmp_length_list)
-            print("total mean: ", sum / i)
-            tmp_length_list = []
+            if i % PRINT_FREQ == 1:
+                # print("np.mean(tmp_length_list): ", np.mean(tmp_length_list))
+                if len(tmp_length_list) == 0:
+                    print("debug")
+                sum += np.sum(tmp_length_list)
+                print("mean length: ", sum / i)
+                tmp_length_list = []
     # plt.show()
 
 
