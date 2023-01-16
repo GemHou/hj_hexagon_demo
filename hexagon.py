@@ -107,10 +107,12 @@ def main():
             tmp_line.plot(color="g")
 
             length = tmp_line.hexagon_length(hexagon_line_list)
+            assert length < 2
+            assert length > 0
             length_list.append(length)
         if i % 1000 == 1:
             print("np.mean(length_list): ", np.mean(length_list))
-    plt.show()
+    # plt.show()
 
 
 if __name__ == '__main__':
