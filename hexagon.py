@@ -153,12 +153,13 @@ def main():
                 sum += np.sum(tmp_length_list)
                 mean_length = sum / i
                 print("mean length: ", mean_length)
-                writer.add_scalar('mean_length', mean_length, i)
                 delta_time = time.time() - last_time
                 print("delta time: ", delta_time)
-                writer.add_scalar('delta_time', delta_time, i)
                 last_time = time.time()
                 tmp_length_list = []
+                if i > PRINT_FREQ * 10:
+                    writer.add_scalar('mean_length', mean_length, i)
+                    writer.add_scalar('delta_time', delta_time, i)
     # plt.show()
 
 
